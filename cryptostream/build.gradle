@@ -1,0 +1,69 @@
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion 28
+    buildToolsVersion '28.0.3'
+
+    defaultConfig {
+        minSdkVersion 21
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        ndk {
+            abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86', 'x86_64'
+        }
+
+        externalNativeBuild {
+            cmake {
+                arguments '-DANDROID_STL=c++_static'
+                cppFlags '-fno-exceptions',
+                        '-fno-rtti',
+                        '-std=c++14',
+                        '-Oz',
+                        // TODO: Try LTO again when https://github.com/android-ndk/ndk/issues/721 is fixed.
+                        //'-flto', '-Wl,-O3',
+                        '-fvisibility=hidden',
+                        '-ffunction-sections',
+                        '-fdata-sections'//, '-Wl,--gc-sections'
+            }
+        }
+
+        consumerProguardFiles 'consumer-proguard-rules.pro'
+    }
+
+    sourceSets {
+        main {
+            jniLibs.srcDirs += "${project.rootDir}/libsodium/lib"
+        }
+    }
+
+    buildTypes {
+        debug {
+            externalNativeBuild {
+                cmake {
+                    cppFlags '-DDEBUG', '-g'
+                }
+            }
+        }
+
+        release {
+            externalNativeBuild {
+                cmake {
+                    cppFlags '-DNDEBUG'
+                }
+            }
+        }
+    }
+
+    externalNativeBuild {
+        cmake {
+            path "src/main/cpp/CMakeLists.txt"
+            version "3.10.2"
+        }
+    }
+}
+
+dependencies {
+    implementation 'com.android.support:support-annotations:28.0.0'
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+}

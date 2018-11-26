@@ -1,0 +1,15 @@
+.gradle
+.externalNativeBuild
+
+bin
+gen
+build
+out
+captures
+
+.idea
+*.iml
+classes
+
+.DS_Store
+local.properties
