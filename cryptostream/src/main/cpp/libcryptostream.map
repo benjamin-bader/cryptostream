@@ -1,0 +1,6 @@
+LIBCRYPTOSTREAM {
+    global:
+        JNI*;
+
+    local: *;
+};

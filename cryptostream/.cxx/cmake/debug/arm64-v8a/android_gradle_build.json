@@ -1,0 +1,53 @@
+{
+  "stringTable": {
+    "0": "/Users/benbader/Development/cryptostream/cryptostream/.cxx/cmake/debug/arm64-v8a",
+    "1": "--target=aarch64-none-linux-android21 --gcc-toolchain=/Users/benbader/Library/Android/sdk/ndk/21.1.6352462/toolchains/llvm/prebuilt/darwin-x86_64 --sysroot=/Users/benbader/Library/Android/sdk/ndk/21.1.6352462/toolchains/llvm/prebuilt/darwin-x86_64/sysroot -Dcryptostream_EXPORTS -isystem /Users/benbader/Development/cryptostream/cryptostream/src/main/cpp/../../../../libsodium/include -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security -fno-exceptions -fno-rtti -std=c++14 -Oz -fvisibility=hidden -ffunction-sections -fdata-sections -fomit-frame-pointer -DDEBUG -g -O0 -fno-limit-debug-info -flto=thin -fPIC"
+  },
+  "buildFiles": [
+    "/Users/benbader/Development/cryptostream/cryptostream/src/main/cpp/CMakeLists.txt",
+    "/Users/benbader/Library/Android/sdk/ndk/21.1.6352462/build/cmake/android.toolchain.cmake",
+    "/Users/benbader/Library/Android/sdk/ndk/21.1.6352462/build/cmake/platforms.cmake"
+  ],
+  "cleanCommands": [
+    "/Users/benbader/Library/Android/sdk/cmake/3.10.2.4988404/bin/ninja -C \"/Users/benbader/Development/cryptostream/cryptostream/.cxx/cmake/debug/arm64-v8a\" clean"
+  ],
+  "buildTargetsCommand": "/Users/benbader/Library/Android/sdk/cmake/3.10.2.4988404/bin/ninja  -C \"/Users/benbader/Development/cryptostream/cryptostream/.cxx/cmake/debug/arm64-v8a\" {LIST_OF_TARGETS_TO_BUILD}",
+  "libraries": {
+    "cryptostream-Debug-arm64-v8a": {
+      "buildCommand": "/Users/benbader/Library/Android/sdk/cmake/3.10.2.4988404/bin/ninja -C \"/Users/benbader/Development/cryptostream/cryptostream/.cxx/cmake/debug/arm64-v8a\" cryptostream",
+      "buildType": "debug",
+      "toolchain": "959780746",
+      "abi": "arm64-v8a",
+      "artifactName": "cryptostream",
+      "files": [
+        {
+          "src": "/Users/benbader/Development/cryptostream/cryptostream/src/main/cpp/java/ByteArray.cpp",
+          "flagsOrdinal": 1,
+          "workingDirectoryOrdinal": 0
+        },
+        {
+          "src": "/Users/benbader/Development/cryptostream/cryptostream/src/main/cpp/java/Exceptions.cpp",
+          "flagsOrdinal": 1,
+          "workingDirectoryOrdinal": 0
+        },
+        {
+          "src": "/Users/benbader/Development/cryptostream/cryptostream/src/main/cpp/CryptoStreamJni.cpp",
+          "flagsOrdinal": 1,
+          "workingDirectoryOrdinal": 0
+        }
+      ],
+      "headers": [],
+      "output": "/Users/benbader/Development/cryptostream/cryptostream/build/intermediates/cmake/debug/obj/arm64-v8a/libcryptostream.so",
+      "runtimeFiles": []
+    }
+  },
+  "toolchains": {
+    "959780746": {
+      "cppCompilerExecutable": "/Users/benbader/Library/Android/sdk/ndk/21.1.6352462/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang++"
+    }
+  },
+  "cFileExtensions": [],
+  "cppFileExtensions": [
+    "cpp"
+  ]
+}

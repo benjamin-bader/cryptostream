@@ -1,0 +1,19 @@
+[
+{
+  "directory": "/Users/benbader/Development/cryptostream/cryptostream/.cxx/cmake/release/armeabi-v7a",
+  "command": "/Users/benbader/Library/Android/sdk/ndk/21.1.6352462/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang++ --target=armv7-none-linux-androideabi21 --gcc-toolchain=/Users/benbader/Library/Android/sdk/ndk/21.1.6352462/toolchains/llvm/prebuilt/darwin-x86_64 --sysroot=/Users/benbader/Library/Android/sdk/ndk/21.1.6352462/toolchains/llvm/prebuilt/darwin-x86_64/sysroot  -Dcryptostream_EXPORTS -isystem /Users/benbader/Development/cryptostream/cryptostream/src/main/cpp/../../../../libsodium/include  -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -march=armv7-a -mthumb -Wformat -Werror=format-security  -fno-exceptions -fno-rtti -std=c++14 -Oz -fvisibility=hidden -ffunction-sections -fdata-sections -fomit-frame-pointer -DNDEBUG -Oz -DNDEBUG  -O3 -flto -flto=thin -fPIC   -o CMakeFiles/cryptostream.dir/java/ByteArray.cpp.o -c /Users/benbader/Development/cryptostream/cryptostream/src/main/cpp/java/ByteArray.cpp",
+  "file": "/Users/benbader/Development/cryptostream/cryptostream/src/main/cpp/java/ByteArray.cpp"
+},
+
+{
+  "directory": "/Users/benbader/Development/cryptostream/cryptostream/.cxx/cmake/release/armeabi-v7a",
+  "command": "/Users/benbader/Library/Android/sdk/ndk/21.1.6352462/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang++ --target=armv7-none-linux-androideabi21 --gcc-toolchain=/Users/benbader/Library/Android/sdk/ndk/21.1.6352462/toolchains/llvm/prebuilt/darwin-x86_64 --sysroot=/Users/benbader/Library/Android/sdk/ndk/21.1.6352462/toolchains/llvm/prebuilt/darwin-x86_64/sysroot  -Dcryptostream_EXPORTS -isystem /Users/benbader/Development/cryptostream/cryptostream/src/main/cpp/../../../../libsodium/include  -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -march=armv7-a -mthumb -Wformat -Werror=format-security  -fno-exceptions -fno-rtti -std=c++14 -Oz -fvisibility=hidden -ffunction-sections -fdata-sections -fomit-frame-pointer -DNDEBUG -Oz -DNDEBUG  -O3 -flto -flto=thin -fPIC   -o CMakeFiles/cryptostream.dir/java/Exceptions.cpp.o -c /Users/benbader/Development/cryptostream/cryptostream/src/main/cpp/java/Exceptions.cpp",
+  "file": "/Users/benbader/Development/cryptostream/cryptostream/src/main/cpp/java/Exceptions.cpp"
+},
+
+{
+  "directory": "/Users/benbader/Development/cryptostream/cryptostream/.cxx/cmake/release/armeabi-v7a",
+  "command": "/Users/benbader/Library/Android/sdk/ndk/21.1.6352462/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang++ --target=armv7-none-linux-androideabi21 --gcc-toolchain=/Users/benbader/Library/Android/sdk/ndk/21.1.6352462/toolchains/llvm/prebuilt/darwin-x86_64 --sysroot=/Users/benbader/Library/Android/sdk/ndk/21.1.6352462/toolchains/llvm/prebuilt/darwin-x86_64/sysroot  -Dcryptostream_EXPORTS -isystem /Users/benbader/Development/cryptostream/cryptostream/src/main/cpp/../../../../libsodium/include  -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -march=armv7-a -mthumb -Wformat -Werror=format-security  -fno-exceptions -fno-rtti -std=c++14 -Oz -fvisibility=hidden -ffunction-sections -fdata-sections -fomit-frame-pointer -DNDEBUG -Oz -DNDEBUG  -O3 -flto -flto=thin -fPIC   -o CMakeFiles/cryptostream.dir/CryptoStreamJni.cpp.o -c /Users/benbader/Development/cryptostream/cryptostream/src/main/cpp/CryptoStreamJni.cpp",
+  "file": "/Users/benbader/Development/cryptostream/cryptostream/src/main/cpp/CryptoStreamJni.cpp"
+}
+]

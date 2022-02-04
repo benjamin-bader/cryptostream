@@ -1,8 +1,8 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 28
-    buildToolsVersion '28.0.3'
+    compileSdkVersion 29
+    buildToolsVersion '29.0.2'
 
     defaultConfig {
         minSdkVersion 21
@@ -20,10 +20,13 @@ android {
                         '-std=c++14',
                         '-Oz',
                         // TODO: Try LTO again when https://github.com/android-ndk/ndk/issues/721 is fixed.
-                        //'-flto', '-Wl,-O3',
+                        //'-flto', //'-Wl,-O3',
                         '-fvisibility=hidden',
                         '-ffunction-sections',
-                        '-fdata-sections'//, '-Wl,--gc-sections'
+                        '-fdata-sections',
+                        '-fomit-frame-pointer'
+                        '-fno-asynchronous-unwind-tables'
+                        //'-fdata-sections' //, '-Wl,--gc-sections'
             }
         }
 

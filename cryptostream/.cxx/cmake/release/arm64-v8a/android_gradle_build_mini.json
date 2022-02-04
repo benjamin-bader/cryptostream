@@ -1,0 +1,20 @@
+{
+  "buildFiles": [
+    "/Users/benbader/Development/cryptostream/cryptostream/src/main/cpp/CMakeLists.txt",
+    "/Users/benbader/Library/Android/sdk/ndk/21.1.6352462/build/cmake/android.toolchain.cmake",
+    "/Users/benbader/Library/Android/sdk/ndk/21.1.6352462/build/cmake/platforms.cmake"
+  ],
+  "cleanCommands": [
+    "/Users/benbader/Library/Android/sdk/cmake/3.10.2.4988404/bin/ninja -C \"/Users/benbader/Development/cryptostream/cryptostream/.cxx/cmake/release/arm64-v8a\" clean"
+  ],
+  "buildTargetsCommand": "/Users/benbader/Library/Android/sdk/cmake/3.10.2.4988404/bin/ninja  -C \"/Users/benbader/Development/cryptostream/cryptostream/.cxx/cmake/release/arm64-v8a\" {LIST_OF_TARGETS_TO_BUILD}",
+  "libraries": {
+    "cryptostream-Release-arm64-v8a": {
+      "artifactName": "cryptostream",
+      "buildCommand": "/Users/benbader/Library/Android/sdk/cmake/3.10.2.4988404/bin/ninja -C \"/Users/benbader/Development/cryptostream/cryptostream/.cxx/cmake/release/arm64-v8a\" cryptostream",
+      "abi": "arm64-v8a",
+      "output": "/Users/benbader/Development/cryptostream/cryptostream/build/intermediates/cmake/release/obj/arm64-v8a/libcryptostream.so",
+      "runtimeFiles": []
+    }
+  }
+}

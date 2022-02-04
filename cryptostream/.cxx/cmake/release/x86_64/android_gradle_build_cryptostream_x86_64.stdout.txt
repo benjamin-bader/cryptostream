@@ -1,0 +1,2 @@
+ninja: Entering directory `/Users/benbader/Development/cryptostream/cryptostream/.cxx/cmake/release/x86_64'
+[1/1] Linking CXX shared library /Users/benbader/Development/cryptostream/cryptostream/build/intermediates/cmake/release/obj/x86_64/libcryptostream.so

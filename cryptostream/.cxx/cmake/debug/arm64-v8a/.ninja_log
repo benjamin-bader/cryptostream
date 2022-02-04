@@ -1,0 +1,5 @@
+# ninja log v5
+0	52	1612461869	CMakeFiles/cryptostream.dir/java/ByteArray.cpp.o	853d2008e365a349
+0	58	1612461869	CMakeFiles/cryptostream.dir/java/Exceptions.cpp.o	5ccd4e474cafa8d0
+1	124	1612461869	CMakeFiles/cryptostream.dir/CryptoStreamJni.cpp.o	71e755313544ba9f
+124	926	1612461870	/Users/benbader/Development/cryptostream/cryptostream/build/intermediates/cmake/debug/obj/arm64-v8a/libcryptostream.so	822fc3ab7159cff5

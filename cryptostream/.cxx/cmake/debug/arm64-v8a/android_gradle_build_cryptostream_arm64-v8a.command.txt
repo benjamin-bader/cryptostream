@@ -1,0 +1,7 @@
+Executable : /Users/benbader/Library/Android/sdk/cmake/3.10.2.4988404/bin/ninja
+arguments : 
+-C
+/Users/benbader/Development/cryptostream/cryptostream/.cxx/cmake/debug/arm64-v8a
+cryptostream
+jvmArgs : 
+
