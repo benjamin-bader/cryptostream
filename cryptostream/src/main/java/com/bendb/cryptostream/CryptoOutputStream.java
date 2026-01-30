@@ -1,6 +1,6 @@
 package com.bendb.cryptostream;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import java.io.FilterOutputStream;
 import java.io.IOException;
