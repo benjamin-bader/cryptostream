@@ -50,6 +50,10 @@ echo "Cloning libsodium ${VERSION}..."
 git clone --depth 1 --branch "${VERSION}" https://github.com/jedisct1/libsodium.git
 cd libsodium
 
+# Run autogen to generate configure scripts
+echo "Running autogen.sh..."
+./autogen.sh
+
 # Build for each ABI
 for ABI in "${ABIS[@]}"; do
     echo ""
@@ -57,19 +61,23 @@ for ABI in "${ABIS[@]}"; do
     echo "Building for ${ABI}..."
     echo "=================================================="
 
-    # Map ABI to libsodium's dist-build script
+    # Map ABI to libsodium's dist-build script and build directory name
     case "$ABI" in
         armeabi-v7a)
             SCRIPT="android-armv7-a.sh"
+            BUILD_DIR_NAME="armv7-a"
             ;;
         arm64-v8a)
             SCRIPT="android-armv8-a.sh"
+            BUILD_DIR_NAME="armv8-a"
             ;;
         x86)
             SCRIPT="android-x86.sh"
+            BUILD_DIR_NAME="i686"
             ;;
         x86_64)
             SCRIPT="android-x86_64.sh"
+            BUILD_DIR_NAME="westmere"
             ;;
         *)
             echo "Unknown ABI: $ABI"
@@ -77,13 +85,20 @@ for ABI in "${ABIS[@]}"; do
             ;;
     esac
 
-    # Run the build script
-    cd dist-build
-    ./"$SCRIPT"
-    cd ..
+    # Run the build script (must be run from libsodium root)
+    # Override NDK_PLATFORM to use API 21 (modern NDKs don't support API 19)
+    # Set LIBSODIUM_FULL_BUILD to disable --enable-minimal (which excludes xchacha20)
+    LIBSODIUM_FULL_BUILD=1 NDK_PLATFORM="android-21" ./dist-build/"$SCRIPT"
 
     # Copy the results to temporary output directory
-    BUILD_DIR="libsodium-android-${ABI}"
+    # Use glob pattern to match directory (arm64 builds may have +crypto suffix)
+    BUILD_DIR=$(ls -d libsodium-android-${BUILD_DIR_NAME}* 2>/dev/null | head -1)
+
+    if [ -z "$BUILD_DIR" ] || [ ! -d "$BUILD_DIR" ]; then
+        echo "Error: Build directory not found for ${ABI}"
+        exit 1
+    fi
+
     mkdir -p "$TEMP_OUTPUT_DIR/lib/${ABI}"
     mkdir -p "$TEMP_OUTPUT_DIR/include"
 
