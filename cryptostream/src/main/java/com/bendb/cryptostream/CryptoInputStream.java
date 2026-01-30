@@ -85,13 +85,13 @@ public class CryptoInputStream extends FilterInputStream {
                 bytesToDeliver -= toCopy;
                 currentOffset += toCopy;
 
-                Arrays.fill(buffer, bufferIndex + 1, buffer.length, (byte) 0);
+                Arrays.fill(buffer, bufferIndex, buffer.length, (byte) 0);
             } else {
                 System.arraycopy(buffer, 0, output, currentOffset, length);
                 System.arraycopy(buffer, length, buffer, 0, bufferIndex - length);
 
                 bufferIndex -= length;
-                Arrays.fill(buffer, bufferIndex + 1, buffer.length, (byte) 0);
+                Arrays.fill(buffer, bufferIndex, buffer.length, (byte) 0);
 
                 return length;
             }
