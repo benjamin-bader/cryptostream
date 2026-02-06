@@ -147,6 +147,39 @@ public class ExampleInstrumentedTest {
     }
 
     @Test
+    public void singleByteReadWrite() throws Exception {
+        byte[] key = Native.generateKey();
+        byte[] testData = "Hello, World!".getBytes();
+
+        // Write byte by byte
+        byte[] encrypted;
+        try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+            try (CryptoOutputStream out = new CryptoOutputStream(baos, key)) {
+                for (byte b : testData) {
+                    out.write(b);
+                }
+            }
+            encrypted = baos.toByteArray();
+        }
+
+        // Read byte by byte
+        byte[] decrypted = new byte[testData.length];
+        try (ByteArrayInputStream bais = new ByteArrayInputStream(encrypted)) {
+            try (CryptoInputStream in = new CryptoInputStream(bais, key)) {
+                for (int i = 0; i < testData.length; i++) {
+                    int b = in.read();
+                    Assert.assertNotEquals(-1, b);
+                    decrypted[i] = (byte) b;
+                }
+                // Verify EOF
+                Assert.assertEquals(-1, in.read());
+            }
+        }
+
+        Assert.assertArrayEquals(testData, decrypted);
+    }
+
+    @Test
     public void counterSynchronizationAcrossBlocks() throws Exception {
         // Test that counter synchronization works correctly across multiple blocks
         // This verifies that bytesRead / 64 is the correct counter increment

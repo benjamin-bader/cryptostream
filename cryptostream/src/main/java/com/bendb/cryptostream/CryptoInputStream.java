@@ -31,6 +31,8 @@ public class CryptoInputStream extends FilterInputStream {
     private int bufferIndex = 0;
     private long counter = 0;
 
+    private final byte[] singleByte = new byte[1];
+
     private boolean eof = false;
     private boolean closed = false;
 
@@ -62,12 +64,11 @@ public class CryptoInputStream extends FilterInputStream {
             return result;
         }
 
-        byte[] temp = new byte[1];
-        if (read(temp) == -1) {
+        if (read(singleByte) == -1) {
             return -1;
         }
 
-        return temp[0] & 0xFF;
+        return singleByte[0] & 0xFF;
     }
 
     @Override

@@ -34,6 +34,8 @@ public class CryptoOutputStream extends FilterOutputStream {
     private int bufferIndex = 0;
     private long counter = 0;
 
+    private final byte[] singleByte = new byte[1];
+
     private boolean eof = false;
     private boolean closed = false;
 
@@ -51,7 +53,8 @@ public class CryptoOutputStream extends FilterOutputStream {
 
     @Override
     public void write(final int b) throws IOException {
-        write(new byte[] { (byte) b });
+        singleByte[0] = (byte) b;
+        write(singleByte);
     }
 
     @Override
