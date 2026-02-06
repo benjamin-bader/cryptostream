@@ -7,7 +7,6 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import org.junit.Assert.*;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.EOFException;
@@ -22,7 +21,7 @@ import java.util.Arrays;
 @RunWith(AndroidJUnit4.class)
 public class ExampleInstrumentedTest {
     @Test
-    public void crytpoRoundTrip() throws Exception {
+    public void cryptoRoundTrip() throws Exception {
         byte[] key = Native.generateKey();
         byte[] bytes = new byte[1024];
         new SecureRandom().nextBytes(bytes);
