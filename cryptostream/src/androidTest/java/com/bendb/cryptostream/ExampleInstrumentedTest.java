@@ -10,6 +10,7 @@ import org.junit.runner.RunWith;
 import org.junit.Assert.*;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.EOFException;
 import java.security.SecureRandom;
 import java.util.Arrays;
 
@@ -222,6 +223,288 @@ public class ExampleInstrumentedTest {
         }
 
         Assert.assertArrayEquals(originalData, decrypted1);
+    }
+
+    @Test
+    public void emptyStream() throws Exception {
+        byte[] key = Native.generateKey();
+        byte[] emptyData = new byte[0];
+
+        byte[] encrypted;
+        try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+            try (CryptoOutputStream out = new CryptoOutputStream(baos, key)) {
+                out.write(emptyData);
+            }
+            encrypted = baos.toByteArray();
+        }
+
+        byte[] decrypted;
+        try (ByteArrayInputStream bais = new ByteArrayInputStream(encrypted)) {
+            try (CryptoInputStream in = new CryptoInputStream(bais, key)) {
+                Assert.assertEquals(-1, in.read());
+            }
+        }
+    }
+
+    @Test
+    public void partialBlockReadWrite() throws Exception {
+        int bs = Native.blockSize();
+        byte[] key = Native.generateKey();
+
+        // Test data that's not a multiple of block size
+        byte[] testData = new byte[bs / 2 + 7];
+        new SecureRandom().nextBytes(testData);
+
+        byte[] encrypted;
+        try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+            try (CryptoOutputStream out = new CryptoOutputStream(baos, key)) {
+                out.write(testData);
+            }
+            encrypted = baos.toByteArray();
+        }
+
+        byte[] decrypted;
+        try (ByteArrayInputStream bais = new ByteArrayInputStream(encrypted);
+             ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+            try (CryptoInputStream in = new CryptoInputStream(bais, key)) {
+                byte[] buffer = new byte[100];
+                while (true) {
+                    int n = in.read(buffer);
+                    if (n == -1) break;
+                    baos.write(buffer, 0, n);
+                }
+            }
+            decrypted = baos.toByteArray();
+        }
+
+        Assert.assertArrayEquals(testData, decrypted);
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void readAfterClose() throws Exception {
+        byte[] key = Native.generateKey();
+        byte[] testData = "test".getBytes();
+
+        byte[] encrypted;
+        try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+            try (CryptoOutputStream out = new CryptoOutputStream(baos, key)) {
+                out.write(testData);
+            }
+            encrypted = baos.toByteArray();
+        }
+
+        CryptoInputStream in = new CryptoInputStream(new ByteArrayInputStream(encrypted), key);
+        in.close();
+        in.read(); // Should throw
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void writeAfterClose() throws Exception {
+        byte[] key = Native.generateKey();
+
+        CryptoOutputStream out = new CryptoOutputStream(new ByteArrayOutputStream(), key);
+        out.close();
+        out.write(42); // Should throw
+    }
+
+    @Test
+    public void multipleReadsAtEOF() throws Exception {
+        byte[] key = Native.generateKey();
+        byte[] testData = "test".getBytes();
+
+        byte[] encrypted;
+        try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+            try (CryptoOutputStream out = new CryptoOutputStream(baos, key)) {
+                out.write(testData);
+            }
+            encrypted = baos.toByteArray();
+        }
+
+        try (ByteArrayInputStream bais = new ByteArrayInputStream(encrypted);
+             CryptoInputStream in = new CryptoInputStream(bais, key)) {
+            byte[] buffer = new byte[100];
+            int bytesRead = in.read(buffer);
+            Assert.assertEquals(testData.length, bytesRead);
+
+            // Multiple reads at EOF should all return -1
+            Assert.assertEquals(-1, in.read());
+            Assert.assertEquals(-1, in.read());
+            Assert.assertEquals(-1, in.read(buffer));
+        }
+    }
+
+    @Test(expected = EOFException.class)
+    public void nonceReadFailure() throws Exception {
+        byte[] key = Native.generateKey();
+        byte[] tooShort = new byte[Native.nonceSize() - 1]; // Not enough for nonce
+
+        new CryptoInputStream(new ByteArrayInputStream(tooShort), key);
+    }
+
+    @Test
+    public void skipZero() throws Exception {
+        byte[] key = Native.generateKey();
+        byte[] testData = "test".getBytes();
+
+        byte[] encrypted;
+        try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+            try (CryptoOutputStream out = new CryptoOutputStream(baos, key)) {
+                out.write(testData);
+            }
+            encrypted = baos.toByteArray();
+        }
+
+        try (ByteArrayInputStream bais = new ByteArrayInputStream(encrypted);
+             CryptoInputStream in = new CryptoInputStream(bais, key)) {
+            long skipped = in.skip(0);
+            Assert.assertEquals(0, skipped);
+
+            // Should still be able to read all data
+            byte[] buffer = new byte[100];
+            int bytesRead = in.read(buffer);
+            Assert.assertEquals(testData.length, bytesRead);
+        }
+    }
+
+    @Test
+    public void skipNegative() throws Exception {
+        byte[] key = Native.generateKey();
+        byte[] testData = "test".getBytes();
+
+        byte[] encrypted;
+        try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+            try (CryptoOutputStream out = new CryptoOutputStream(baos, key)) {
+                out.write(testData);
+            }
+            encrypted = baos.toByteArray();
+        }
+
+        try (ByteArrayInputStream bais = new ByteArrayInputStream(encrypted);
+             CryptoInputStream in = new CryptoInputStream(bais, key)) {
+            long skipped = in.skip(-5);
+            Assert.assertEquals(0, skipped);
+        }
+    }
+
+    @Test
+    public void skipAtEOF() throws Exception {
+        byte[] key = Native.generateKey();
+        byte[] testData = "test".getBytes();
+
+        byte[] encrypted;
+        try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+            try (CryptoOutputStream out = new CryptoOutputStream(baos, key)) {
+                out.write(testData);
+            }
+            encrypted = baos.toByteArray();
+        }
+
+        try (ByteArrayInputStream bais = new ByteArrayInputStream(encrypted);
+             CryptoInputStream in = new CryptoInputStream(bais, key)) {
+            // Read all data
+            byte[] buffer = new byte[100];
+            in.read(buffer);
+
+            // Skip at EOF should return 0
+            long skipped = in.skip(100);
+            Assert.assertEquals(0, skipped);
+        }
+    }
+
+    @Test
+    public void exactlyOneBlock() throws Exception {
+        int bs = Native.blockSize();
+        byte[] key = Native.generateKey();
+        byte[] testData = new byte[bs];
+        new SecureRandom().nextBytes(testData);
+
+        byte[] encrypted;
+        try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+            try (CryptoOutputStream out = new CryptoOutputStream(baos, key)) {
+                out.write(testData);
+            }
+            encrypted = baos.toByteArray();
+        }
+
+        byte[] decrypted;
+        try (ByteArrayInputStream bais = new ByteArrayInputStream(encrypted);
+             ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+            try (CryptoInputStream in = new CryptoInputStream(bais, key)) {
+                byte[] buffer = new byte[bs * 2];
+                while (true) {
+                    int n = in.read(buffer);
+                    if (n == -1) break;
+                    baos.write(buffer, 0, n);
+                }
+            }
+            decrypted = baos.toByteArray();
+        }
+
+        Assert.assertArrayEquals(testData, decrypted);
+    }
+
+    @Test
+    public void oneBlockPlusOneByte() throws Exception {
+        int bs = Native.blockSize();
+        byte[] key = Native.generateKey();
+        byte[] testData = new byte[bs + 1];
+        new SecureRandom().nextBytes(testData);
+
+        byte[] encrypted;
+        try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+            try (CryptoOutputStream out = new CryptoOutputStream(baos, key)) {
+                out.write(testData);
+            }
+            encrypted = baos.toByteArray();
+        }
+
+        byte[] decrypted;
+        try (ByteArrayInputStream bais = new ByteArrayInputStream(encrypted);
+             ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+            try (CryptoInputStream in = new CryptoInputStream(bais, key)) {
+                byte[] buffer = new byte[bs * 2];
+                while (true) {
+                    int n = in.read(buffer);
+                    if (n == -1) break;
+                    baos.write(buffer, 0, n);
+                }
+            }
+            decrypted = baos.toByteArray();
+        }
+
+        Assert.assertArrayEquals(testData, decrypted);
+    }
+
+    @Test
+    public void oneBlockMinusOneByte() throws Exception {
+        int bs = Native.blockSize();
+        byte[] key = Native.generateKey();
+        byte[] testData = new byte[bs - 1];
+        new SecureRandom().nextBytes(testData);
+
+        byte[] encrypted;
+        try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+            try (CryptoOutputStream out = new CryptoOutputStream(baos, key)) {
+                out.write(testData);
+            }
+            encrypted = baos.toByteArray();
+        }
+
+        byte[] decrypted;
+        try (ByteArrayInputStream bais = new ByteArrayInputStream(encrypted);
+             ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+            try (CryptoInputStream in = new CryptoInputStream(bais, key)) {
+                byte[] buffer = new byte[bs * 2];
+                while (true) {
+                    int n = in.read(buffer);
+                    if (n == -1) break;
+                    baos.write(buffer, 0, n);
+                }
+            }
+            decrypted = baos.toByteArray();
+        }
+
+        Assert.assertArrayEquals(testData, decrypted);
     }
 
     @Test

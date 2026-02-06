@@ -151,7 +151,11 @@ public class CryptoInputStream extends FilterInputStream {
             bufferIndex -= toCopy;
         }
 
-        return length - bytesToDeliver;
+        int bytesDelivered = length - bytesToDeliver;
+        if (bytesDelivered == 0 && eof) {
+            return -1;
+        }
+        return bytesDelivered;
     }
 
     private void fillNextBlock() throws IOException {
