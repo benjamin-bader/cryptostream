@@ -147,6 +147,51 @@ public class ExampleInstrumentedTest {
     }
 
     @Test
+    public void counterSynchronizationAcrossBlocks() throws Exception {
+        // Test that counter synchronization works correctly across multiple blocks
+        // This verifies that bytesRead / 64 is the correct counter increment
+        int bs = Native.blockSize();
+        byte[] key = Native.generateKey();
+
+        // Create data that's 2.5 blocks to test partial block handling
+        byte[] originalData = new byte[bs * 2 + bs / 2];
+        new SecureRandom().nextBytes(originalData);
+
+        // Encrypt
+        byte[] encrypted;
+        try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+            try (CryptoOutputStream out = new CryptoOutputStream(baos, key)) {
+                out.write(originalData);
+            }
+            encrypted = baos.toByteArray();
+        }
+
+        // Decrypt with different read patterns to ensure counter stays in sync
+        byte[] decrypted1;
+        try (ByteArrayInputStream bais = new ByteArrayInputStream(encrypted);
+             ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+            try (CryptoInputStream in = new CryptoInputStream(bais, key)) {
+                // Read one byte at a time for first 100 bytes
+                for (int i = 0; i < 100; i++) {
+                    int b = in.read();
+                    if (b == -1) break;
+                    baos.write(b);
+                }
+                // Then read in chunks
+                byte[] buffer = new byte[1000];
+                while (true) {
+                    int n = in.read(buffer);
+                    if (n == -1) break;
+                    baos.write(buffer, 0, n);
+                }
+            }
+            decrypted1 = baos.toByteArray();
+        }
+
+        Assert.assertArrayEquals(originalData, decrypted1);
+    }
+
+    @Test
     public void skipBlocksAfterReadingSomeData() throws Exception {
         int bs = Native.blockSize();
         byte[] key = Native.generateKey();
