@@ -36,6 +36,11 @@ public class CryptoInputStream extends FilterInputStream {
 
     public CryptoInputStream(@NonNull InputStream in, @NonNull byte[] key) throws IOException {
         super(in);
+
+        if (key.length != Native.keySize()) {
+            throw new IllegalArgumentException("Invalid key");
+        }
+
         this.key = key.clone();
 
         int bytesRead = 0;

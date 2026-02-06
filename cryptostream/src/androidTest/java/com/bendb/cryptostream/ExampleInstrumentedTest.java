@@ -131,6 +131,21 @@ public class ExampleInstrumentedTest {
         }
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void invalidKeyLengthOutputStream() throws Exception {
+        byte[] badKey = new byte[16]; // Wrong size
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        new CryptoOutputStream(baos, badKey); // Should throw
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void invalidKeyLengthInputStream() throws Exception {
+        byte[] badKey = new byte[16]; // Wrong size
+        byte[] dummyData = new byte[Native.nonceSize() + 100];
+        ByteArrayInputStream bais = new ByteArrayInputStream(dummyData);
+        new CryptoInputStream(bais, badKey); // Should throw
+    }
+
     @Test
     public void skipBlocksAfterReadingSomeData() throws Exception {
         int bs = Native.blockSize();
