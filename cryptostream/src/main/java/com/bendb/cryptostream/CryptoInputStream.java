@@ -99,16 +99,19 @@ public class CryptoInputStream extends FilterInputStream {
             if (bufferIndex < length) {
                 int toCopy = bufferIndex;
                 System.arraycopy(buffer, 0, output, currentOffset, toCopy);
-                System.arraycopy(buffer, toCopy, buffer, 0, bufferIndex - toCopy);
+                // No need to shift buffer since we're emptying it completely (toCopy == bufferIndex)
 
                 bufferIndex = 0;
                 bytesToDeliver -= toCopy;
                 currentOffset += toCopy;
 
-                Arrays.fill(buffer, bufferIndex, buffer.length, (byte) 0);
+                Arrays.fill(buffer, 0, buffer.length, (byte) 0);
             } else {
                 System.arraycopy(buffer, 0, output, currentOffset, length);
-                System.arraycopy(buffer, length, buffer, 0, bufferIndex - length);
+                int remaining = bufferIndex - length;
+                if (remaining > 0) {
+                    System.arraycopy(buffer, length, buffer, 0, remaining);
+                }
 
                 bufferIndex -= length;
                 Arrays.fill(buffer, bufferIndex, buffer.length, (byte) 0);
@@ -143,8 +146,11 @@ public class CryptoInputStream extends FilterInputStream {
 
             int toCopy = Math.min(bytesToDeliver, bufferIndex);
             System.arraycopy(buffer, 0, output, currentOffset, toCopy);
-            System.arraycopy(buffer, toCopy, buffer, 0, bufferIndex - toCopy);
-            Arrays.fill(buffer, bufferIndex, buffer.length, (byte) 0);
+            int remaining = bufferIndex - toCopy;
+            if (remaining > 0) {
+                System.arraycopy(buffer, toCopy, buffer, 0, remaining);
+            }
+            Arrays.fill(buffer, bufferIndex - toCopy, buffer.length, (byte) 0);
 
             bytesToDeliver -= toCopy;
             currentOffset += toCopy;
